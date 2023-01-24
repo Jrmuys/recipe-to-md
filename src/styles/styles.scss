@@ -1,0 +1,9 @@
+$semantic-root-element: '#root';
+
+$enable-semantic-container: true;
+
+// Enable .classes
+$enable-classes: false;
+
+// Import Pico
+@import '@picocss/pico/scss/pico';
