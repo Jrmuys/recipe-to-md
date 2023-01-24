@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Inter } from '@next/font/google';
 import Link from 'next/link';
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -10,8 +10,8 @@ export default function Home() {
    const [website, setWebsite] = useState('');
    const [markdown, setMarkdown] = useState('');
 
-   const handleSubmit = async (e: Event) => {
-      e.preventDefault();
+   const handleSubmit = async (event: Event) => {
+      event.preventDefault();
       console.log(website);
       if (!website) return;
       if (website === 'template') {
@@ -36,6 +36,9 @@ export default function Home() {
          return;
       }
 
+      const handleFocus = (event: { target: { select: () => any } }) =>
+         event.target.select();
+
       const requestData = {
          url: website,
       };
@@ -57,11 +60,21 @@ export default function Home() {
       navigator.clipboard.writeText(markdown);
    };
 
-   const handleChange = (e) => {
-      setWebsite(e.target.value);
+   const handleChange = (event: Event) => {
+      if (event.target instanceof HTMLInputElement)
+         setWebsite(event.target.value);
    };
 
-   const convertRecipeToMd = (recipe) => {
+   const convertRecipeToMd = (recipe: {
+      name: any;
+      image: any;
+      description: any;
+      ingredients: any;
+      instructions: any;
+      tags: any;
+      time: any;
+      servings: any;
+   }) => {
       const {
          name,
          image,
@@ -76,33 +89,30 @@ export default function Home() {
 title: ${name}
 description: ${description}
 category: recipe
-tags: [${tags.map((tag) => `${tag}`).join(', ')}]
+tags: [${tags.map((tag: any) => `${tag}`).join(', ')}]
 ---
 # ${name}
-
-![${name}](${image})
-
-${description}
-
+${description ? `\n${description}\n` : ''}
+${image ? `![${name}](${image})\n` : ''}
 ${time.prep ? `Prep: ${time.prep}\n` : ''}${
          time.cook ? `Cook: ${time.cook}\n` : ''
       }${time.inactive ? `Inactive: ${time.inactive}\n` : ''}${
          time.ready ? `Yield: ${time.yield}\n` : ''
-      }${time.total ? `Total: ${time.total}` : ''}
-${servings ? `\nServings: ${servings}\n` : ''}
+      }${time.total ? `Total: ${time.total}\n` : ''}
+${servings ? `Servings: ${servings}\n` : ''}
 Original recipe: [${name}](${website})
 
 ## Ingredients
 
-${ingredients.map((ingredient) => `- ${ingredient}\n`).join(' ')}
+${ingredients.map((ingredient: any) => `- ${ingredient}\n`).join('')}
 
 ## Instructions
 
 ${instructions
-   .map((instruction, index) => {
+   .map((instruction: any, index: number) => {
       return `${index + 1}. ${instruction}\n`;
    })
-   .join(' ')}
+   .join('')}
 `;
 
       return markdown;
@@ -124,8 +134,8 @@ ${instructions
             <section id="convert">
                <h2>Convert</h2>
                <p>
-                  Enter a recipe from <em>most</em> websites and we'll convert
-                  it into a Markdown file.
+                  Enter a recipe from <em>most</em> websites and we&aposll
+                  convert it into a Markdown file
                </p>
                <form onSubmit={handleSubmit}>
                   <div className="grid">
@@ -145,14 +155,16 @@ ${instructions
                </form>
             </section>
             <section>
-               <h2>Code</h2>
+               <h2>Result</h2>
                {/* Add a button to select and copy the resulting code */}
                <button type="button" onClick={handleCopy}>
                   Copy
                </button>
-               <code>
-                  <pre>{markdown}</pre>
-               </code>
+               <div className="container">
+                  <code>
+                     <pre>{markdown}</pre>
+                  </code>
+               </div>
             </section>
             {/* ./ Preview */}
          </main>
