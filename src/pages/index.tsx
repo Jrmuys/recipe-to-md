@@ -10,7 +10,7 @@ export default function Home() {
    const [website, setWebsite] = useState('');
    const [markdown, setMarkdown] = useState('');
 
-   const handleSubmit = async (event: Event) => {
+   const handleSubmit = async (event: any) => {
       event.preventDefault();
       console.log(website);
       if (!website) return;
@@ -60,7 +60,7 @@ export default function Home() {
       navigator.clipboard.writeText(markdown);
    };
 
-   const handleChange = (event: Event) => {
+   const handleChange = (event: any) => {
       if (event.target instanceof HTMLInputElement)
          setWebsite(event.target.value);
    };
@@ -92,6 +92,7 @@ category: recipe
 tags: [${tags.map((tag: any) => `${tag}`).join(', ')}]
 ---
 # ${name}
+[[Recipes]]
 ${description ? `\n${description}\n` : ''}
 ${image ? `![${name}](${image})\n` : ''}
 ${time.prep ? `Prep: ${time.prep}\n` : ''}${
