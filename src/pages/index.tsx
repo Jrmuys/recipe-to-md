@@ -42,7 +42,7 @@ export default function Home() {
       const requestData = {
          url: website,
       };
-      const response = fetch('http://localhost:3000/api/convert', {
+      const response = fetch('/api/convert', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',
